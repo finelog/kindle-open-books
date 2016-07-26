@@ -1,0 +1,26 @@
+from calibre.web.feeds.recipes import BasicNewsRecipe
+
+class Nature_of_Code_the(BasicNewsRecipe):
+
+    title = 'YAML'
+    author = 'Oren Ben-Kiki,Clark Evans,Ingy döt Net'
+    description = ''
+    url_prefix = 'http://www.yaml.org/spec/1.2/'
+    no_stylesheets = True
+    keep_only_tags = [{ 'id': 'container' }]
+
+    def parse_index(self):
+        soup = self.index_to_soup(self.url_prefix + '/spec.html')
+
+        div = soup.find('div', { 'id': 'toc-list' })
+
+        articles = []
+        for link in div.findAll('a'):
+            title = link.contents[0].strip()
+            url = self.url_prefix + link['href']
+            a = { 'title': title, 'url': url }
+            articles.append(a)
+
+        ans = [(title, articles)]
+
+        return ans
