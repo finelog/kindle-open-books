@@ -1,0 +1,28 @@
+import sys, os
+from calibre.web.feeds.news import BasicNewsRecipe
+
+class TheLinuxKernel(BasicNewsRecipe):
+    title = 'the_linux_kernel'
+    __author__ = 'Andries Brouwer'
+    description = ('Some remarks on the Linux Kernel.')
+    timefmt = '[%Y-%m-%d]'
+    no_stylesheets = True
+    url_prefix = 'https://www.win.tue.nl/~aeb/linux/lk/'
+    remove_tags = []
+
+    def parse_index(self):
+        soup = self.index_to_soup('https://www.win.tue.nl/~aeb/linux/lk/lk.html')
+        toc = soup.find(['body'])
+        articles = [{'title': 'The Linux Kernel', 'url': self.url_prefix}]
+        for tag in toc.findAll('a', {"name":None}) :
+            #if tag['href'].find('#', -10) > -1 :
+            #   continue
+            title = self.tag_to_string(tag)
+            if title.find("Next") > -1 :
+                continue
+            url = self.url_prefix + tag['href']
+            article = {'title': title, 'url': url}
+            articles.append(article)
+        ans = [('The Linux Kernel', articles)]
+        return ans
+
