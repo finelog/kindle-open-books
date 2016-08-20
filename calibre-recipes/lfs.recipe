@@ -1,0 +1,25 @@
+import sys, os
+from calibre.web.feeds.news import BasicNewsRecipe
+
+class LinuxFromScratch(BasicNewsRecipe):
+    title = 'Linux From Scratch'
+    __author__ = 'Gerard Beekmans'
+    description = ('Linux From Scratch (LFS) is a project that provides you with step-by-step instructions for building your own customized Linux system entirely from source.')
+    timefmt = '[%Y-%m-%d]'
+    no_stylesheets = True
+    url_prefix = 'http://www.linuxfromscratch.org/lfs/view/stable/'
+    remove_tags = [dict(name='div', attrs={'class': 'navheader'}),
+                   dict(name='div', attrs={'class': 'navfooter'})]
+
+    def parse_index(self):
+        soup = self.index_to_soup('http://www.linuxfromscratch.org/lfs/view/stable/')
+        toc = soup.find("div", {"class":"toc"})
+        articles = [{'title': 'Linux From Scratch', 'url': self.url_prefix}]
+        for tag in toc.findAll('a') :
+            title = self.tag_to_string(tag)
+            url = self.url_prefix + tag['href']
+            article = {'title': title, 'url': url}
+            articles.append(article)
+        ans = [('Linux From Scratch', articles)]
+        return ans
+

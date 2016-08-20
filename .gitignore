@@ -1,5 +1,7 @@
 .DS_Store
+ebook-convert
 *.mobi
+*.epub
 debug/
 
 ### JetBrains template
